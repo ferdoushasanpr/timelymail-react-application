@@ -1,5 +1,6 @@
 import type { ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
+import MainComponent from "./MainComponent";
 
 interface Task {
   id: number;
@@ -45,103 +46,84 @@ function Dashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#121212] text-white font-sans">
-      {/* Sidebar */}
-      <aside className="w-60 bg-[#1e1e1e] border-r border-[#333] p-5 flex flex-col gap-5">
-        <h2 className="text-blue-500 text-lg font-semibold">TimelyMail</h2>
-        <nav className="flex flex-col gap-2">
-          <div className="cursor-pointer text-gray-400 hover:text-white">
-            Dashboard
-          </div>
-          <div className="cursor-pointer text-gray-400 hover:text-white">
-            Settings
-          </div>
-          <div className="cursor-pointer text-red-400 mt-5 hover:text-red-500">
-            Logout
-          </div>
-        </nav>
-      </aside>
+    <MainComponent><main className="flex-1 p-10 max-w-3xl mx-auto">
+    <header className="mb-8">
+      <h1 className="text-2xl font-bold">Task Overview</h1>
+      <p className="text-gray-400">Manage your pending activities</p>
+    </header>
 
-      {/* Main Content */}
-      <main className="flex-1 p-10 max-w-3xl mx-auto">
-        <header className="mb-8">
-          <h1 className="text-2xl font-bold">Task Overview</h1>
-          <p className="text-gray-400">Manage your pending activities</p>
-        </header>
+    {/* Add / Edit Task */}
+    <section className="bg-[#1e1e1e] p-5 rounded-lg shadow-lg mb-8">
+      <h3 className="mb-4 text-lg font-semibold">
+        {editingId ? "Edit Task" : "Add New Task"}
+      </h3>
 
-        {/* Add / Edit Task */}
-        <section className="bg-[#1e1e1e] p-5 rounded-lg shadow-lg mb-8">
-          <h3 className="mb-4 text-lg font-semibold">
-            {editingId ? "Edit Task" : "Add New Task"}
-          </h3>
+      <form onSubmit={addTask} className="flex flex-col gap-3">
+        <input
+          name="title"
+          placeholder="What needs to be done?"
+          value={newTask.title}
+          onChange={handleInputChange}
+          required
+          className="w-full p-2 rounded bg-[#2c2c2c] border border-[#333] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
 
-          <form onSubmit={addTask} className="flex flex-col gap-3">
-            <input
-              name="title"
-              placeholder="What needs to be done?"
-              value={newTask.title}
-              onChange={handleInputChange}
-              required
-              className="w-full p-2 rounded bg-[#2c2c2c] border border-[#333] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+        <input
+          name="deadline"
+          type="date"
+          value={newTask.deadline}
+          onChange={handleInputChange}
+          required
+          className="w-full p-2 rounded bg-[#2c2c2c] border border-[#333] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
 
-            <input
-              name="deadline"
-              type="date"
-              value={newTask.deadline}
-              onChange={handleInputChange}
-              required
-              className="w-full p-2 rounded bg-[#2c2c2c] border border-[#333] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded transition"
+        >
+          {editingId ? "Update Task" : "Add Task"}
+        </button>
+      </form>
+    </section>
 
-            <button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded transition"
-            >
-              {editingId ? "Update Task" : "Add Task"}
-            </button>
-          </form>
-        </section>
+    {/* Task List */}
+    <section>
+      <h3 className="mb-4 text-lg font-semibold">Pending Tasks</h3>
 
-        {/* Task List */}
-        <section>
-          <h3 className="mb-4 text-lg font-semibold">Pending Tasks</h3>
-
-          {tasks.map((task) => (
-            <div
-              key={task.id}
-              className="bg-[#1e1e1e] p-5 rounded-lg shadow-md mb-4 flex justify-between items-center"
-            >
-              <div>
-                <div className="font-bold text-lg">{task.title}</div>
-                <div className="text-sm text-gray-400">
-                  Due: {task.deadline}
-                </div>
-
-                <div className="mt-3 flex gap-4">
-                  <button
-                    onClick={() => startEdit(task)}
-                    className="text-blue-500 text-sm underline hover:text-blue-400"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => deleteTask(task.id)}
-                    className="text-red-400 text-sm underline hover:text-red-500"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
+      {tasks.map((task) => (
+        <div
+          key={task.id}
+          className="bg-[#1e1e1e] p-5 rounded-lg shadow-md mb-4 flex justify-between items-center"
+        >
+          <div>
+            <div className="font-bold text-lg">{task.title}</div>
+            <div className="text-sm text-gray-400">
+              Due: {task.deadline}
             </div>
-          ))}
 
-          {tasks.length === 0 && (
-            <p className="text-gray-600">No pending tasks. Relax!</p>
-          )}
-        </section>
-      </main>
-    </div>
+            <div className="mt-3 flex gap-4">
+              <button
+                onClick={() => startEdit(task)}
+                className="text-blue-500 text-sm underline hover:text-blue-400"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => deleteTask(task.id)}
+                className="text-red-400 text-sm underline hover:text-red-500"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {tasks.length === 0 && (
+        <p className="text-gray-600">No pending tasks. Relax!</p>
+      )}
+    </section>
+  </main></MainComponent>
   );
 }
 
