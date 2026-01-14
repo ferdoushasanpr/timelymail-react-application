@@ -1,6 +1,7 @@
 import type { ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
 import heroImage from "../assets/hero.png";
+import { useNavigate } from "react-router";
 
 function Login() {
   const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -9,6 +10,8 @@ function Login() {
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   const handleToggle = (): void => setIsLogin(!isLogin);
 
@@ -20,6 +23,7 @@ function Login() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     console.log(isLogin ? "Logging in..." : "Signing up...", formData);
+    navigate("/dashboard");
   };
 
   return (
@@ -33,9 +37,7 @@ function Login() {
         />
       </div>
 
-      <h2 className="mb-5 text-xl font-semibold">
-        Welcome to TimelyMail!
-      </h2>
+      <h2 className="mb-5 text-xl font-semibold">Welcome to TimelyMail!</h2>
 
       {/* Form */}
       <form
